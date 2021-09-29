@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    <title>Main Page</title>
+{% endblock title %}
+
+
+{% block content %}
+
+    <h1>Chart</h1>
+    Тестовые месяцы: {{ test_months }}<br>
+    Тестовые номера: {{ test_numbers }}
+
+    <!-- Canvas -->
+    <div style="height:40vh; width:40vw">
+        <canvas id="myChart"></canvas>
+    </div>
+<br>
+    <!-- /Canvas -->
+
+    <h3 class="mb-0 d-inline">Посты</h3>
+    <small class="d-block text-muted">реальные, из базы данных</small>
+
+<a href="{% url 'post-create' %}" class="btn btn-outline-success my-3">Создать Пост</a>
+
+
+    {% for post in posts %}
+        <div><strong>Название:</strong> {{ post.title }}</div>
+        <div><strong>Дата:</strong> {{ post.date_posted|date }}</div>
+        <a href="{% url 'post-delete' post.pk %}" class="btn btn-sm btn-danger mt-1">Удалить</a>
+        <hr>
+    {% endfor %}
+
+
+
+    <!-- Chart -->
+    <script>
+        // Register the datalabels plugin to all charts:
+        Chart.register(ChartDataLabels);
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            <!-- for line uncomment Chart.register(ChartDataLabels), for others, comment it out  -->
+            type: 'line',
+            data: {
+                <!-- Итерируем по тестовым месяцам -->
+                labels: [{% for month in test_months %}'{{ month }}',{% endfor %}],
+                datasets: [{
+                    label: 'Посты',
+                    {#stepped: true,#}
+                    <!-- Итерируем по тестовым номерам -->
+                    data: [{% for number in test_numbers %}'{{ number }}',{% endfor %}],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    {# For lables plugin, works with pie, bar. #}
+                    {# See options here: https://github.com/emn178/chartjs-plugin-labels #}
+                    labels: {
+                        render: 'value',
+                    },
+                    {# For datalables plugin, works with line chart. #}
+                    {# See options here: https://chartjs-plugin-datalabels.netlify.app/guide/getting-started.html#configuration #}
+                    datalabels: {
+                        align: 'top',
+                    },
+
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                        }
+                    },
+                }
+            }
+        });
+    </script>
+{% endblock content %}

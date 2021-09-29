@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    <title>Create Post</title>
+{% endblock title %}
+
+
+{% block content %}
+
+
+
+<form method="POST" action="" class="mt-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-muted">Время по умолчанию уже стоит в нужном формате</div>
+    <input class="btn btn-secondary" type="submit" value="Создать">
+</form>
+
+{% endblock content %}
